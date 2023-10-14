@@ -115,7 +115,6 @@ class GameModel: ObservableObject {
     @Published var isInputSelected = false
     @Published var inputKind: InputKind = .hands
     
-    @Published var players = initialPlayers
     @Published var clouds: [Cloud] = (0..<30).map { Cloud(id: $0, isHappy: false) }
     @Published var cloudSounds = [AudioFileResource]()
     
@@ -143,10 +142,9 @@ class GameModel: ObservableObject {
         score = 0
         isInputSelected = false
         inputKind = .hands
-        players = initialPlayers
-        
+
         #if targetEnvironment(simulator)
-        Player.local = players.first!
+        Player.local = initialPlayers.first!
         #endif
         
         clouds = (0..<30).map { Cloud(id: $0, isHappy: false) }
