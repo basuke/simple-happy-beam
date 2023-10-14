@@ -96,7 +96,7 @@ struct SoloPlay: View {
                 #if targetEnvironment(simulator)
                 let shouldAddProjector = true
                 #else
-                let shouldAddProjector = gameModel.inputKind == .alternative
+                let shouldAddProjector = false
                 #endif
 
                 if shouldAddProjector, heart != nil {

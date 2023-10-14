@@ -15,96 +15,26 @@ struct Lobby: View {
     }
     
     var body: some View {
-        if !gameModel.isInputSelected {
-            inputSelection
-                .frame(width: 634, height: 499)
-        } else {
-                Gauge(value: progressValue) {
-                    EmptyView()
-                }
-                .labelsHidden()
-                .animation(.default, value: progressValue)
-                .gaugeStyle(.accessoryCircularCapacity)
-                .scaleEffect(3)
-                .frame(width: 150, height: 150)
-                .padding(75)
-                .overlay {
-                    Text(verbatim: "\(gameModel.countDown)")
-                        .animation(.none, value: progressValue)
-                        .font(.system(size: 64))
-                        .bold()
-                }
-                .frame(width: 634, height: 499)
-                .accessibilityHidden(true)
+        Gauge(value: progressValue) {
+            EmptyView()
         }
-    }
-    
-    var inputSelection: some View {
-        VStack {
-            Text("Choose how you’ll cheer up grumpy clouds.")
-                .font(.title)
-                .padding(.top, 40)
-                .padding(.bottom, 30)
-            HStack(alignment: .top, spacing: 30) {
-                VStack {
-                    Button {
-                        chooseInputAndReady(.hands)
-                    } label: {
-                        Label {
-                            Text("Make a heart with two hands.")
-                        } icon: {
-                            Image("gesture_hand")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 216, height: 216)
-                                .scaleEffect(x: 1.18, anchor: .center)
-                                .offset(y: 30)
-                        }
-                        .labelStyle(.iconOnly)
-                    }
-                    .buttonBorderShape(.roundedRectangle(radius: 28))
-                    .padding(.bottom, 10)
-                    
-                    Text("Make a heart with two hands.")
-                        .font(.headline)
-                        .frame(width: 216)
-                        .accessibilityHidden(true)
-                }
-
-                VStack {
-                    Button {
-                        chooseInputAndReady(.alternative)
-                    } label: {
-                        Label {
-                            Text("Use a pinch gesture or a compatible device.")
-                        } icon: {
-                            Image("keyboardGameController")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 216, height: 216)
-                        }
-                        .labelStyle(.iconOnly)
-                    }
-                    .buttonBorderShape(.roundedRectangle(radius: 28))
-                    .padding(.bottom, 10)
-                    
-                    Text("Use a pinch gesture or a compatible device.")
-                        .font(.headline)
-                        .frame(width: 216)
-                        .accessibilityHidden(true)
-                }
-            }
-            .multilineTextAlignment(.center)
-            .padding(.horizontal, 20)
+        .labelsHidden()
+        .animation(.default, value: progressValue)
+        .gaugeStyle(.accessoryCircularCapacity)
+        .scaleEffect(3)
+        .frame(width: 150, height: 150)
+        .padding(75)
+        .overlay {
+            Text(verbatim: "\(gameModel.countDown)")
+                .animation(.none, value: progressValue)
+                .font(.system(size: 64))
+                .bold()
         }
-    }
-    
-    func chooseInputAndReady(_ kind: InputKind) {
-        gameModel.isInputSelected = true
-        gameModel.inputKind = kind
-        
-        // Delay three seconds, then...
-        gameModel.isCountDownReady = true
+        .frame(width: 634, height: 499)
+        .accessibilityHidden(true)
+        .onAppear() {
+            gameModel.isCountDownReady = true
+        }
     }
 }
 

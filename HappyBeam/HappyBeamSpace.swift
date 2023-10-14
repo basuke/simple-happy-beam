@@ -52,36 +52,6 @@ struct HappyBeamSpace: View {
                     try await handleCollisionStart(for: event, gameModel: gameModel)
                 }
             }
-            
-            Task.detached {
-                for await _ in NotificationCenter.default.notifications(named: .GCControllerDidConnect) {
-                    Task { @MainActor in
-                        for controller in GCController.controllers() {
-                            controller.extendedGamepad?.valueChangedHandler = { pad, _ in
-                                Task { @MainActor in
-                                    if gameModel.isUsingControllerInput == false {
-                                        gameModel.isUsingControllerInput = true
-                                    }
-                                    gameModel.controllerInputX = pad.leftThumbstick.xAxis.value
-                                    gameModel.controllerInputY = pad.leftThumbstick.yAxis.value
-                                }
-                            }
-                            
-                            if controller.extendedGamepad == nil {
-                                controller.microGamepad?.valueChangedHandler = { pad, _ in
-                                    Task { @MainActor in
-                                        if gameModel.isUsingControllerInput == false {
-                                            gameModel.isUsingControllerInput = true
-                                        }
-                                        gameModel.controllerInputX = pad.dpad.xAxis.value
-                                        gameModel.controllerInputY = pad.dpad.yAxis.value
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
         } update: { updateContent in
             let handsCenterTransform = gestureModel.computeTransformOfUserPerformedHeartGesture()
             if let handsCenter = handsCenterTransform {
@@ -123,10 +93,6 @@ struct HappyBeamSpace: View {
                         endBlasterBeam()
                     }
                 }
-            }
-            
-            if gameModel.isUsingControllerInput {
-                gameControllerLoop()
             }
         }
         .gesture(DragGesture(minimumDistance: 0.0)
@@ -239,41 +205,6 @@ struct HappyBeamSpace: View {
                 try? await Task.sleep(for: .milliseconds(66.666_666))
             }
             collisionEntity.removeFromParent()
-        }
-    }
-    
-    /// Continously updates the beam position in response to input from a game controller.
-    @MainActor
-    func gameControllerLoop() {
-        Task { @MainActor in
-            let speed: Float = 0.75
-            gameModel.controllerX += gameModel.controllerInputX * speed
-            gameModel.controllerY -= gameModel.controllerInputY * speed
-            
-            let heart = globalHeart!
-            if !isFloorBeamShowing && (gameModel.controllerInputX != 0.0 || gameModel.controllerInputX != 0.0) {
-                gameModel.controllerLastInput = Date.timeIntervalSinceReferenceDate
-                heart.addChild(floorBeam)
-                emittingBeam = true
-                startBlasterBeam(for: heart, beamType: .turret)
-                floorBeam.orientation = simd_quatf(
-                    Rotation3D(angle: .degrees(90), axis: .z)
-                        .rotated(by: .init(angle: .degrees(180), axis: .y))
-                )
-                isFloorBeamShowing = true
-            } else {
-                let elapsedTime = Date.timeIntervalSinceReferenceDate - gameModel.controllerLastInput
-                if gameModel.controllerInputX == 0.0, gameModel.controllerInputX == 0.0, elapsedTime > 3 {
-                    heart.removeChild(floorBeam)
-                    isFloorBeamShowing = false
-                    endBlasterBeam()
-                }
-            }
-            
-            heart.orientation = simd_quatf(
-                Rotation3D(angle: .degrees(Double(-gameModel.controllerX)), axis: .z)
-                    .rotated(by: .init(angle: .degrees(Double(-gameModel.controllerY)), axis: .x))
-            )
         }
     }
 }

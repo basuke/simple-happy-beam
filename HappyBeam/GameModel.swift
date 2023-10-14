@@ -112,18 +112,9 @@ class GameModel: ObservableObject {
             }
         }
     }
-    @Published var isInputSelected = false
-    @Published var inputKind: InputKind = .hands
-    
+
     @Published var clouds: [Cloud] = (0..<30).map { Cloud(id: $0, isHappy: false) }
     @Published var cloudSounds = [AudioFileResource]()
-    
-    @Published var isUsingControllerInput = false
-    @Published var controllerX: Float = 0
-    @Published var controllerY: Float = 90.0
-    @Published var controllerInputX: Float = 0
-    @Published var controllerInputY: Float = 0
-    @Published var controllerLastInput = Date.timeIntervalSinceReferenceDate
 
     /// Removes 3D content when then game is over.
     func clear() {
@@ -140,22 +131,13 @@ class GameModel: ObservableObject {
         isCountDownReady = false
         countDown = 3
         score = 0
-        isInputSelected = false
-        inputKind = .hands
 
-        #if targetEnvironment(simulator)
-        Player.local = initialPlayers.first!
-        #endif
-        
         clouds = (0..<30).map { Cloud(id: $0, isHappy: false) }
         cloudNumber = 0
         hitCounts = [:]
         cloudIsHit = [:]
         cloudEntities = []
-        isUsingControllerInput = false
-        controllerX = 0
-        controllerY = 90.0
-        
+
         victoryPlayer.pause()
         gameplayPlayer.pause()
         
@@ -258,13 +240,4 @@ class GameModel: ObservableObject {
             cloudMovementAnimations.append(animation)
         }
     }
-}
-
-/// The kinds of input selections offered to players.
-enum InputKind {
-    /// An input method that uses ARKit to detect a heart gesture.
-    case hands
-    
-    /// An input method that spawns a stationary heart projector.
-    case alternative
 }

@@ -49,12 +49,9 @@ struct SoloScore: View {
     }
     
     func playAgain() {
-        let inputChoice = gameModel.inputKind
         gameModel.reset()
         gameModel.isPlaying = true
-        gameModel.isInputSelected = true
         gameModel.isCountDownReady = true
-        gameModel.inputKind = inputChoice
     }
     
     func goBackToStart() async {
