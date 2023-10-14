@@ -15,16 +15,12 @@ class GameModel: ObservableObject {
     @Published var isPaused = false {
         didSet {
             if isPaused == true {
-                gameplayPlayer.pause()
-                
                 for child in spaceOrigin.children {
                     if child.name.contains("CCloud") {
                         child.stopAllAnimations(recursive: false)
                     }
                 }
             } else {
-                gameplayPlayer.play()
-                
                 for child in spaceOrigin.children {
                     if child.name.contains("CCloud") {
                         let start = Point3D(child.position)
@@ -58,60 +54,25 @@ class GameModel: ObservableObject {
     /// A Boolean value that indicates that game assets have loaded.
     @Published var readyToStart = false
     
-    // Music players.
-    var victoryPlayer = try! AVAudioPlayer(contentsOf: Bundle.main.url(forResource: "happyBeamVictory", withExtension: "m4a")!)
-    var gameplayPlayer = try! AVAudioPlayer(contentsOf: Bundle.main.url(forResource: "happyBeamGameplay", withExtension: "m4a")!)
-    var menuPlayer = try! AVAudioPlayer(contentsOf: Bundle.main.url(forResource: "happyBeamMenu", withExtension: "m4a")!)
-    
     @Published var isSpatial = false
     
     @Published var isFinished = false {
         didSet {
             if isFinished == true {
                 clear()
-                gameplayPlayer.pause()
-                
-                victoryPlayer.numberOfLoops = -1
-                victoryPlayer.volume = 0.6
-                victoryPlayer.currentTime = 0
-                victoryPlayer.play()
             }
         }
     }
     
-    @Published var isSoloReady = false {
-        didSet {
-            if isPlaying == true {
-                victoryPlayer.pause()
-
-                gameplayPlayer.volume = 0.6
-                gameplayPlayer.currentTime = 0
-                gameplayPlayer.play()
-            }
-        }
-    }
+    @Published var isSoloReady = false
     
     static let gameTime = 35
     @Published var timeLeft = gameTime
-    @Published var isCountDownReady = false {
-        didSet {
-            if isCountDownReady == true {
-                menuPlayer.setVolume(0, fadeDuration: Double(countDown))
-            }
-        }
-    }
+    @Published var isCountDownReady = false
     
     @Published var countDown = 3
     @Published var score = 0
-    @Published var isMuted = false {
-        didSet {
-            if isMuted == true {
-                gameplayPlayer.pause()
-            } else {
-                gameplayPlayer.play()
-            }
-        }
-    }
+    @Published var isMuted = false
 
     @Published var clouds: [Cloud] = (0..<30).map { Cloud(id: $0, isHappy: false) }
     @Published var cloudSounds = [AudioFileResource]()
@@ -138,9 +99,6 @@ class GameModel: ObservableObject {
         cloudIsHit = [:]
         cloudEntities = []
 
-        victoryPlayer.pause()
-        gameplayPlayer.pause()
-        
         clear()
     }
     

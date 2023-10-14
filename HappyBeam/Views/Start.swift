@@ -49,12 +49,6 @@ struct Start: View {
         }
         .padding(.horizontal, 150)
         .frame(width: 634, height: 499)
-        .onAppear {
-            gameModel.menuPlayer.volume = 0.6
-            gameModel.menuPlayer.numberOfLoops = -1
-            gameModel.menuPlayer.currentTime = 0
-            gameModel.menuPlayer.play()
-        }
     }
 }
 
