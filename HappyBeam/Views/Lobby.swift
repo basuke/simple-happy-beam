@@ -19,10 +19,6 @@ struct Lobby: View {
             inputSelection
                 .frame(width: 634, height: 499)
         } else {
-            if gameModel.isSharePlaying {
-                multiWaiting
-                    .frame(width: 634, height: 499)
-            } else { // Solo
                 Gauge(value: progressValue) {
                     EmptyView()
                 }
@@ -40,7 +36,6 @@ struct Lobby: View {
                 }
                 .frame(width: 634, height: 499)
                 .accessibilityHidden(true)
-            }
         }
     }
     
@@ -108,41 +103,8 @@ struct Lobby: View {
         gameModel.isInputSelected = true
         gameModel.inputKind = kind
         
-        if gameModel.isSharePlaying {
-            multiReady()
-        } else {
-            // Delay three seconds, then...
-            gameModel.isCountDownReady = true
-        }
-    }
-    
-    func multiReady() {
-        print("Sending local ready message for: ", sessionInfo?.session?.localParticipant.id.asPlayerName as Any)
-        Player.local?.isReady = true
-        gameModel.players = gameModel.players.filter { _ in true }
-        sessionInfo?.reliableMessenger?.send(ReadyStateMessage(ready: true)) { error in
-            if error != nil {
-                print("Send score error:", error!)
-            }
-        }
-    }
-    
-    var multiWaiting: some View {
-        VStack(spacing: 20) {
-            Image("shareplayGraphic")
-            Text("Waiting for all players to choose.")
-                .font(.title)
-            HStack(spacing: 10) {
-                ForEach(gameModel.players, id: \.name) { player in
-                    if player.isReady {
-                        Image(systemName: "checkmark.circle")
-                            .foregroundColor(.green)
-                    } else {
-                        ProgressView()
-                    }
-                }
-            }
-        }
+        // Delay three seconds, then...
+        gameModel.isCountDownReady = true
     }
 }
 

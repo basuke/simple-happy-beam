@@ -100,14 +100,6 @@ func handleCloudHit(for cloud: Entity, gameModel: GameModel, remote: Bool = fals
             if ("CCloud" + String(cloudInstance.id)) == cloud.name {
                 gameModel.clouds.first(where: { $0.id == cloudInstance.id })?.isHappy = true
                 
-                if gameModel.isSharePlaying {
-                    sessionInfo?.reliableMessenger?.send(ScoreMessage(cloudID: cloudInstance.id)) { error in
-                        if error != nil {
-                            print("Error sending score message: ", error!)
-                        }
-                    }
-                }
-                
                 cloudInstance.isHappy = true
             }
         }

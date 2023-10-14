@@ -63,7 +63,6 @@ class GameModel: ObservableObject {
     var gameplayPlayer = try! AVAudioPlayer(contentsOf: Bundle.main.url(forResource: "happyBeamGameplay", withExtension: "m4a")!)
     var menuPlayer = try! AVAudioPlayer(contentsOf: Bundle.main.url(forResource: "happyBeamMenu", withExtension: "m4a")!)
     
-    @Published var isSharePlaying = false
     @Published var isSpatial = false
     
     @Published var isFinished = false {
@@ -136,7 +135,6 @@ class GameModel: ObservableObject {
     func reset() {
         isPlaying = false
         isPaused = false
-        isSharePlaying = false
         isFinished = false
         isSoloReady = false
         timeLeft = GameModel.gameTime

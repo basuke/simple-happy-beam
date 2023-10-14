@@ -34,26 +34,10 @@ struct Start: View {
                         gameModel.isPlaying = true
                         gameModel.timeLeft = GameModel.gameTime
                     } label: {
-                        Text("Play Solo")
+                        Text("Play")
                             .frame(maxWidth: .infinity)
                     }
                     .disabled(!gameModel.readyToStart)
-                    
-                    Button {
-                        print("Starting as SharePlay", groupStateObserver.isEligibleForGroupSession)
-                        
-                        Task {
-                            do {
-                                try await startSession()
-                            } catch {
-                                print("SharePlay session failure", error)
-                            }
-                        }
-                    } label: {
-                        Text("Play with Friends")
-                            .frame(maxWidth: .infinity)
-                    }
-                    .disabled(!groupStateObserver.isEligibleForGroupSession)
                 }
                 .font(.system(size: 16, weight: .bold))
                 .frame(width: 180)

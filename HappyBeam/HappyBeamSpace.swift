@@ -105,10 +105,6 @@ struct HappyBeamSpace: View {
                 beamIntermediate.transform.translation = SIMD3<Float>(position.vector)
                 beamIntermediate.transform.rotation = simd_quatf(vector: [Float(averageX), Float(averageY), Float(averageZ), Float(averageW)])
                 lastHeartDetectionTime = Date.timeIntervalSinceReferenceDate
-                
-                if gameModel.isSharePlaying {
-                    sendBeamPositionUpdate(Pose3D(handsCenter)!)
-                }
             }
             
             let shouldShowBeam = handsCenterTransform != nil
@@ -187,19 +183,6 @@ struct HappyBeamSpace: View {
         }
         .task {
             await gestureModel.monitorSessionEvents()
-        }
-    }
-    
-    // Send each player's beam data during FaceTime calls that are spatial.
-    func sendBeamPositionUpdate(_ pose: Pose3D) {
-        if let sessionInfo = sessionInfo, let session = sessionInfo.session, let messenger = sessionInfo.messenger {
-            let everyoneElse = session.activeParticipants.subtracting([session.localParticipant])
-            
-            if isShowingBeam, gameModel.isSpatial {
-                messenger.send(BeamMessage(pose: pose), to: .only(everyoneElse)) { error in
-                    if let error = error { print("Message failure:", error) }
-                }
-            }
         }
     }
     
